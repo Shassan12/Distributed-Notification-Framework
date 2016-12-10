@@ -10,7 +10,7 @@ public class Server {
 			registry.rebind("source1", source1);
 			System.out.println("Server set up and running.");
 			
-			Notification n = new Notification();
+			NotificationInterface n = new Notification();
 			n.setMessage("lololol");
 			while(true){
 				try{

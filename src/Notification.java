@@ -11,11 +11,11 @@ public class Notification extends UnicastRemoteObject
 		super();
 	}
 	
-	public void setMessage(String message){
+	public void setMessage(String message) throws RemoteException{
 		this.message = message;
 	}
 	
-	public String getMessage(){
+	public String getMessage()throws RemoteException{
 		return this.message;
 	}
 }

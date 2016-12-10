@@ -23,7 +23,7 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 	}
 
 	@Override
-	public void sendNotification(Notification notification) throws RemoteException {
+	public void sendNotification(NotificationInterface notification) throws RemoteException {
 		//System.out.println(sinkList.size());
 		/*for(NotificationSinkInterface sink : sinkList){
 			//System.out.println("im sending it ok!");

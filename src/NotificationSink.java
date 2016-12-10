@@ -12,8 +12,8 @@ public class NotificationSink extends UnicastRemoteObject
 	}
 	
 	@Override
-	public void notifySink(Notification notification) throws RemoteException {
-		System.out.println("I got the note m9: "+notification.getMessage());
+	public void notifySink(NotificationInterface notification) throws RemoteException {
+		System.out.println("I got the note m9: "+" "+notification.getMessage());
 		
 	}
 

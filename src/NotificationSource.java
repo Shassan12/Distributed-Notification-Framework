@@ -3,8 +3,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class NotificationSource extends UnicastRemoteObject implements NotificationSourceInterface{
-	private ArrayList<NotificationSink> sinkList = 
-			new ArrayList<NotificationSink>();
+	private ArrayList<NotificationSinkInterface> sinkList = 
+			new ArrayList<NotificationSinkInterface>();
 	
 	public NotificationSource() throws RemoteException{
 		super();
@@ -12,9 +12,8 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 	}
 	
 	@Override
-	public void registerSink(NotificationSink sink) throws RemoteException {
-		sinkList.add(sink);
-		System.out.println("lololololololololoololoololol");
+	public void registerSink(NotificationSinkInterface sink) throws RemoteException {
+		sinkList.add((NotificationSinkInterface)sink);
 	}
 
 	@Override
@@ -26,11 +25,13 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 	@Override
 	public void sendNotification(Notification notification) throws RemoteException {
 		//System.out.println(sinkList.size());
-		for(NotificationSink sink : sinkList){
+		/*for(NotificationSinkInterface sink : sinkList){
 			//System.out.println("im sending it ok!");
-			sink.notifySink(notification);
-		}
-		
+			try{
+				sink.notifySink(notification);
+			}catch(Exception e){System.out.println(e.getMessage());}
+		}*/
+		sinkList.get(0).notifySink(notification);
 	}
 	
 	

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Client {
 	private Registry registry;
+	private Registry registry2;
 	private NotificationSinkInterface sink;
 	private NotificationSourceInterface source1;
 	
@@ -23,9 +24,11 @@ public class Client {
 	public boolean connectToServer(){
 		try {
 			registry = LocateRegistry.getRegistry("localhost",20600);
+			registry2 = LocateRegistry.getRegistry("localhost",20601);
 			source1 =(NotificationSourceInterface)
 						registry.lookup("source");
 			source1.registerSink((NotificationSinkInterface)sink);
+			
 			System.out.println("Source found!");
 			return true;
 		} catch (RemoteException | NotBoundException e) {

@@ -43,6 +43,17 @@ public class NewsPage extends JFrame{
 		articlesPanel.add(articlesScrollPane);
 		mainPanel.add(articlesPanel);
 		
+		////////////////////////////////////////
+		Article test = new Article();
+		test.setTitle("Man eats a potato");
+		test.setTopic("nonsense");
+		test.setPostTime("21:47 12/12/2016");
+		NewsTile t = new NewsTile(test);
+		NewsTile t2 = new NewsTile(test);
+		articles.add(t);
+		articles.add(t2);
+		////////////////////////////////////////
+		
 		this.setSize(1200, 700);
 		this.setResizable(false);
 		this.setVisible(true);
@@ -68,14 +79,14 @@ public class NewsPage extends JFrame{
 		 * close time, highest bid and the item's status*/
 		public void init(){
 			this.setLayout(new GridBagLayout());
-			this.setPreferredSize(new Dimension(350,80));
-			this.setMaximumSize(new Dimension(400,80));
+			this.setPreferredSize(new Dimension(350,45));
+			this.setMaximumSize(new Dimension(400,45));
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.weightx = 1.0;
 			gbc.weighty = 1.0;
 			gbc.anchor = GridBagConstraints.NORTHWEST;
 
-			JLabel articleTitle = new JLabel(article.getTitle());
+			JLabel articleTitle = new JLabel("  "+article.getTitle());
 			articleTitle.setFont(new Font("Serif",Font.BOLD, 16));
 			gbc.gridx = 0;
 			gbc.gridy = 0;
@@ -84,7 +95,7 @@ public class NewsPage extends JFrame{
 
 			gbc.anchor = GridBagConstraints.WEST;
 			gbc.gridwidth = 2;
-			JLabel articlePostDate = new JLabel(article.getPostTime());
+			JLabel articlePostDate = new JLabel("  "+article.getPostTime());
 			articlePostDate.setFont(new Font("Serif",Font.BOLD, 12));
 			gbc.gridx = 0;
 			gbc.gridy = 1;
@@ -92,7 +103,7 @@ public class NewsPage extends JFrame{
 
 			JLabel articleTopic = new JLabel(article.getTopic());
 			articleTopic.setFont(new Font("Serif",Font.BOLD, 12));
-			gbc.gridx = 1;
+			gbc.gridx = 2;
 			gbc.gridy = 1;
 			this.add(articleTopic, gbc);
 
@@ -105,7 +116,7 @@ public class NewsPage extends JFrame{
 			Graphics2D g2d = (Graphics2D) g;
 			int width = getWidth();
 			int height = getHeight();
-			GradientPaint gp = new GradientPaint(0, 0, Color.BLUE, 0, height, Color.RED);
+			GradientPaint gp = new GradientPaint(0, 20, Color.CYAN, 0, height, Color.RED);
 			g2d.setPaint(gp);
 			g2d.fillRect(0, 0, width, height);
 		}

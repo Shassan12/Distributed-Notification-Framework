@@ -1,18 +1,33 @@
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class NotificationSource extends UnicastRemoteObject implements NotificationSourceInterface{
 
 	private static final long serialVersionUID = 1L;
 	private ArrayList<NotificationSinkInterface> sinkList = 
 			new ArrayList<NotificationSinkInterface>();
+	private int port;
+	private Registry registry;
 	
-	public NotificationSource() throws RemoteException{
+	public NotificationSource(int port) throws RemoteException{
 		super();
+		this.port = port;
+		setUpSource();
 		Thread pingThread = new Thread(new SinkPinger(sinkList));
 		pingThread.start();
+	}
+	
+	public void setUpSource(){
+		try{
+			registry = LocateRegistry.createRegistry(port);
+			registry.rebind("source", this);
+			System.out.println("Server set up and running.");
+			
+			NotificationInterface n = new Notification();
+		}catch(Exception e){System.out.println(e.getMessage());}
 	}
 	
 	@Override
@@ -21,9 +36,8 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 	}
 
 	@Override
-	public void removeSink() throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public void removeSink(NotificationSinkInterface sink) throws RemoteException {
+		sinkList.remove(sink);
 	}
 
 	@Override

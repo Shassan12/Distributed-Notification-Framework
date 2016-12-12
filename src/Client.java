@@ -24,7 +24,7 @@ public class Client {
 		try {
 			registry = LocateRegistry.getRegistry("localhost",20600);
 			source1 =(NotificationSourceInterface)
-						registry.lookup("source1");
+						registry.lookup("source");
 			source1.registerSink((NotificationSinkInterface)sink);
 			System.out.println("Source found!");
 			return true;
@@ -45,6 +45,7 @@ public class Client {
 			System.out.println("Source found!");
 		}catch(Exception e){System.out.println(e.getMessage());}*/
 		Client client = new Client();
+		NewsPage newsPage = new NewsPage(client);
 		Thread sourcePinger = new Thread(new SourcePinger(client));
 		sourcePinger.start();
 	}

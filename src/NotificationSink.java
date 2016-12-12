@@ -1,5 +1,6 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 public class NotificationSink extends UnicastRemoteObject
 								implements NotificationSinkInterface{
@@ -16,5 +17,9 @@ public class NotificationSink extends UnicastRemoteObject
 		System.out.println("I got the note m9: "+" "+notification.getMessage());
 		
 	}
-
+	
+	@Override
+	public void ping(){
+		System.out.println("ping Recieved");
+	}
 }

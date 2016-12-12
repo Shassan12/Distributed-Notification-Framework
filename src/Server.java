@@ -12,13 +12,12 @@ public class Server {
 			
 			NotificationInterface n = new Notification();
 			n.setMessage("lololol");
-			while(true){
-				try{
-				source1.sendNotification(n);
-				}catch(Exception e){System.out.println(e.getMessage());}
-			}
+			//while(true){
+				//try{
+				//source1.sendNotification(n);
+				//}catch(Exception e){System.out.println(e.getMessage());}
+			//}
 		}catch(Exception e){System.out.println(e.getMessage());}
 
 	}
-
 }

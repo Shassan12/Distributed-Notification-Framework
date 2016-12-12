@@ -1,8 +1,7 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class Notification extends UnicastRemoteObject 
-							implements NotificationInterface{
+public class Notification implements NotificationInterface{
 	
 	private static final long serialVersionUID = 1L;
 	private String message;

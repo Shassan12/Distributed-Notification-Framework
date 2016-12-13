@@ -1,26 +1,27 @@
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class NotificationSource extends UnicastRemoteObject implements NotificationSourceInterface{
 
 	private static final long serialVersionUID = 1L;
+	private String name;
 	private ArrayList<NotificationSinkInterface> sinkList = 
 			new ArrayList<NotificationSinkInterface>();
-	private int port;
-	private Registry registry;
+	private Queue<Notification> Notifications;
 	
-	public NotificationSource(int port) throws RemoteException{
+	public NotificationSource(String name) throws RemoteException{
 		super();
-		this.port = port;
-		setUpSource();
+		this.name = name;
+		this.Notifications = new LinkedList<Notification>();
+		//setUpSource();
 		Thread pingThread = new Thread(new SinkPinger(sinkList));
 		pingThread.start();
 	}
 	
-	public void setUpSource(){
+	/*public void setUpSource(){
 		try{
 			registry = LocateRegistry.createRegistry(port);
 			registry.rebind("source", this);
@@ -28,6 +29,11 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 			
 			NotificationInterface n = new Notification();
 		}catch(Exception e){System.out.println(e.getMessage());}
+	}*/
+	
+	@Override
+	public String getName(){
+		return name;
 	}
 	
 	@Override
@@ -41,14 +47,12 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 	}
 
 	@Override
-	public void sendNotification(NotificationInterface notification) throws RemoteException {
-		//System.out.println(sinkList.size());
-		/*for(NotificationSinkInterface sink : sinkList){
-			//System.out.println("im sending it ok!");
+	public void sendNotification(Notification notification) throws RemoteException {
+		for(NotificationSinkInterface sink : sinkList){
 			try{
 				sink.notifySink(notification);
 			}catch(Exception e){System.out.println(e.getMessage());}
-		}*/
+		}
 		//sinkList.get(0).notifySink(notification);
 	}
 	

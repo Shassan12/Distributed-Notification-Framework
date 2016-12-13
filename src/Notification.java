@@ -4,17 +4,18 @@ import java.rmi.server.UnicastRemoteObject;
 public class Notification implements NotificationInterface{
 	
 	private static final long serialVersionUID = 1L;
-	private String message;
+	private Object message;
 	
-	public Notification() throws RemoteException{
+	public Notification(Object message) throws RemoteException{
 		super();
+		this.message = message;
 	}
 	
 	public void setMessage(String message) throws RemoteException{
 		this.message = message;
 	}
 	
-	public String getMessage()throws RemoteException{
+	public Object getMessage()throws RemoteException{
 		return this.message;
 	}
 }

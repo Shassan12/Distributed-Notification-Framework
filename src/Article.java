@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Article {
+public class Article implements Serializable{
 	private String title;
 	private String topic;
 	private String articleText;

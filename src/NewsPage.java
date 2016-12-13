@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -8,22 +9,30 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class NewsPage extends JFrame{
 	private static final long serialVersionUID = 1L;
-	private Client client;
+	private NotificationSinkInterface sink;
 	private JPanel articles;
+	private ButtonGroup radioGroup;
+	private JButton setTopics;
+	private JTextArea contents;
+	private JLabel titleLabel;
 	
-	public NewsPage(Client client){
+	public NewsPage(NotificationSinkInterface sink){
 		super("News Center");
-		this.client = client;
+		this.sink = sink;
 		this.init();
 	}
 	
@@ -31,11 +40,13 @@ public class NewsPage extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container mainPanel = this.getContentPane();
 		mainPanel.setBackground(Color.lightGray);
+		mainPanel.setLayout(new FlowLayout());
 		
 		JPanel articlesPanel = new JPanel();
+		articlesPanel.setPreferredSize(new Dimension(350,650));
 		articles = new JPanel();
 		articles.setLayout(new BoxLayout(articles, BoxLayout.PAGE_AXIS));
-		articles.setMinimumSize(new Dimension(300,700));
+		articles.setMinimumSize(new Dimension(400,700));
 		JScrollPane articlesScrollPane = new JScrollPane(articles);
 		articlesScrollPane.getVerticalScrollBar().setUnitIncrement(25);
 		articlesScrollPane.setPreferredSize(new Dimension(350,700));
@@ -43,15 +54,50 @@ public class NewsPage extends JFrame{
 		articlesPanel.add(articlesScrollPane);
 		mainPanel.add(articlesPanel);
 		
+		JPanel optionPanel = new JPanel();
+		optionPanel.setMinimumSize(new Dimension(350,650));
+		optionPanel.setPreferredSize(new Dimension(350,650));
+		
+		radioGroup = new ButtonGroup();
+		ArrayList<JRadioButton> buttonList = new ArrayList<JRadioButton>();
+		
+		buttonList.add(new JRadioButton("Politics"));
+		buttonList.add(new JRadioButton("Finance"));
+		buttonList.add(new JRadioButton("Technology"));
+		buttonList.add(new JRadioButton("Satire"));
+
+		for(JRadioButton button : buttonList){
+			radioGroup.add(button);
+			optionPanel.add(button);
+		}
+		
+		setTopics = new JButton("set Topics");
+		optionPanel.add(setTopics);
+		mainPanel.add(optionPanel);
+		
+		JPanel articleContentsPanel = new JPanel();
+		articleContentsPanel.setLayout(new BoxLayout(articleContentsPanel, BoxLayout.PAGE_AXIS));
+		articleContentsPanel.setMinimumSize(new Dimension(350,650));
+		articleContentsPanel.setPreferredSize(new Dimension(350,650));
+		titleLabel = new JLabel(" ");
+		contents = new JTextArea();
+		contents.setMaximumSize(new Dimension(500, 550));
+		contents.setPreferredSize(new Dimension(50, 550));
+		titleLabel.setMinimumSize(new Dimension(350,80));
+		
+		articleContentsPanel.add(titleLabel);
+		articleContentsPanel.add(contents);
+		mainPanel.add(articleContentsPanel);
 		////////////////////////////////////////
-		Article test = new Article();
-		test.setTitle("Man eats a potato");
-		test.setTopic("nonsense");
-		test.setPostTime("21:47 12/12/2016");
-		NewsTile t = new NewsTile(test);
-		NewsTile t2 = new NewsTile(test);
-		articles.add(t);
-		articles.add(t2);
+		//Article test = new Article();
+		//test.setTitle("Man eats a potato");
+		//test.setTopic("nonsense");
+		//test.setPostTime("21:47 12/12/2016");
+		//NewsTile t = new NewsTile(test);
+		//NewsTile t2 = new NewsTile(test);
+		//addArticle(test);
+		//articles.add(t);
+		//articles.add(t2);
 		////////////////////////////////////////
 		
 		this.setSize(1200, 700);
@@ -60,7 +106,12 @@ public class NewsPage extends JFrame{
 		this.setLocationRelativeTo(null);
 	}
 	
-	
+	public void addArticle(Article article){
+		NewsTile tile = new NewsTile(article);
+		articles.add(tile);
+		this.revalidate();
+		this.repaint();
+	}
 	
 	private class NewsTile extends JPanel{
 		private static final long serialVersionUID = 1L;

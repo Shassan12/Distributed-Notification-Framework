@@ -46,18 +46,26 @@ public class Server {
 	public static void main(String[] args) {
 		try {
 			Server server = new Server(1099);
-			NotificationSourceInterface source = new NotificationSource("source1");
-			server.addSource(source);
+			NotificationSourceInterface politicsSource = new NotificationSource("Politics");
+			NotificationSourceInterface financeSource = new NotificationSource("Finance");
+			NotificationSourceInterface technologySource = new NotificationSource("Technology");
+			NotificationSourceInterface satireSource = new NotificationSource("Satire");
+			server.addSource(politicsSource);
+			server.addSource(financeSource);
+			server.addSource(technologySource);
+			server.addSource(satireSource);
 			Article test = new Article();
 			test.setTitle("Man eats a potato");
-			test.setTopic("nonsense");
+			test.setTopic("Politics");
 			test.setPostTime("21:47 12/12/2016");
+			test.setArticleText("fssssasffffffffffffffffffffffffffffffffffffffffffffffffffff");
 			Notification note = new Notification(test);
 			while(true){
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e1) {}	
-				server.sendNotification(note, "source1");
+				server.sendNotification(note, "Politics");
+				server.sendNotification(note, "Satire");
 				System.out.println("sent");
 			}
 		} catch (RemoteException e) {

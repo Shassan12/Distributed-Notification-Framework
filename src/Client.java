@@ -7,10 +7,16 @@ public class Client {
 	public Client(int port, String serverAddress){
 		try {
 			sink = new NotificationSink(port,serverAddress);
-			sink.addSource("source1");
 			newsPage = new NewsPage(sink);
 			runClient();
 		} catch (RemoteException e) {e.printStackTrace();}
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+		    @Override
+		    public void run() {
+		        sink.unsubscribeFromSinks();
+		        System.out.println("k");
+		    }
+		});
 	}
 	
 	public void runClient(){
@@ -34,6 +40,7 @@ public class Client {
 	
 	public static void main(String[] args) {
 		Client client = new Client(1099, "localhost");
+		
 	}
 }	
 

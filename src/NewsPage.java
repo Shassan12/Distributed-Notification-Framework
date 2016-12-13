@@ -8,29 +8,36 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class NewsPage extends JFrame{
 	private static final long serialVersionUID = 1L;
-	private NotificationSinkInterface sink;
+	private NotificationSink sink;
 	private JPanel articles;
 	private ButtonGroup radioGroup;
 	private JButton setTopics;
 	private JTextArea contents;
 	private JLabel titleLabel;
+	private JCheckBox politics;
+	private JCheckBox finance;
+	private JCheckBox technology;
+	private JCheckBox satire;
 	
-	public NewsPage(NotificationSinkInterface sink){
+	public NewsPage(NotificationSink sink){
 		super("News Center");
 		this.sink = sink;
 		this.init();
@@ -58,20 +65,50 @@ public class NewsPage extends JFrame{
 		optionPanel.setMinimumSize(new Dimension(350,650));
 		optionPanel.setPreferredSize(new Dimension(350,650));
 		
-		radioGroup = new ButtonGroup();
-		ArrayList<JRadioButton> buttonList = new ArrayList<JRadioButton>();
-		
-		buttonList.add(new JRadioButton("Politics"));
-		buttonList.add(new JRadioButton("Finance"));
-		buttonList.add(new JRadioButton("Technology"));
-		buttonList.add(new JRadioButton("Satire"));
+		//radioGroup = new ButtonGroup();
+		ArrayList<JCheckBox> buttonList = new ArrayList<JCheckBox>();
+		politics = new JCheckBox("Politics");
+		finance = new JCheckBox("Finance");
+		technology = new JCheckBox("Technology");
+		satire = new JCheckBox("satire");
+		buttonList.add(politics);
+		buttonList.add(finance);
+		buttonList.add(technology);
+		buttonList.add(satire);
 
-		for(JRadioButton button : buttonList){
-			radioGroup.add(button);
+		for(JCheckBox button : buttonList){
+			//radioGroup.add(button);
 			optionPanel.add(button);
 		}
 		
 		setTopics = new JButton("set Topics");
+		
+		setTopics.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				sink.unsubscribeFromSinks();
+				clearArticles();
+				if(politics.isSelected()){
+					sink.addSource("Politics");
+				}
+				
+				if(finance.isSelected()){
+					sink.addSource("Finance");
+				}
+				
+				if(technology.isSelected()){
+					sink.addSource("Technology");
+				}
+				
+				if(satire.isSelected()){
+					sink.addSource("Satire");
+				}
+				
+			};
+		
+		});
+		
 		optionPanel.add(setTopics);
 		mainPanel.add(optionPanel);
 		
@@ -109,6 +146,12 @@ public class NewsPage extends JFrame{
 	public void addArticle(Article article){
 		NewsTile tile = new NewsTile(article);
 		articles.add(tile);
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void clearArticles(){
+		articles.removeAll();
 		this.revalidate();
 		this.repaint();
 	}
@@ -158,7 +201,7 @@ public class NewsPage extends JFrame{
 			gbc.gridy = 1;
 			this.add(articleTopic, gbc);
 
-			//this.addMouseListener(new TileListener(this));
+			this.addMouseListener(new TileListener(this));
 		}
 
 		/*Creates the tile with a gradient fill (to differentiate tiles from each other)*/
@@ -174,35 +217,34 @@ public class NewsPage extends JFrame{
 		
 		/*Listens for mouse clicks on tiles*/
 		private class TileListener extends MouseAdapter{
-			/*private AuctionTile auctionTile;
+			private NewsTile newsTile;
 
-			public TileListener(AuctionTile auctionTile){
-				this.auctionTile = auctionTile;
+			public TileListener(NewsTile newsTile){
+				this.newsTile = newsTile;
 			}
 
 			@Override
 			public void mouseClicked(MouseEvent e){
-				//create a window to display more information for an item and allows the user
-				//to bid on the item
-				Item itemToView = auctionTile.getItem();
-				new AuctionViewFrame(itemToView,itemToView.getTitle(),user,client);
+				Article article = newsTile.getArticle();
+				titleLabel.setText(article.getTitle());
+				contents.setText(article.getArticleText());
 			}
-
+			
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				//apply a transparent layer on top of the tile on mouse over
-				auctionTile.setOpaque(false);
-				Graphics g = auctionTile.getGraphics();
-				g.setColor(new Color(255,0,0,80));
-				g.fillRect(0, 0, auctionTile.getWidth(), auctionTile.getHeight());
+				newsTile.setOpaque(false);
+				Graphics g = newsTile.getGraphics();
+				g.setColor(new Color(0,255,0,80));
+				g.fillRect(0, 0, newsTile.getWidth(), newsTile.getHeight());
 			}
-
+			
 			@Override
 			public void mouseExited(MouseEvent e) {
 				//remove transparent layer when mouse exits the tile
-				auctionTile.setOpaque(true);
-				auctionTile.repaint();
-			}*/		 
+				newsTile.setOpaque(true);
+				newsTile.repaint();
+			}
 		}
 	}
 }

@@ -1,8 +1,6 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class NotificationSource extends UnicastRemoteObject implements NotificationSourceInterface{
 
@@ -10,12 +8,12 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 	private String name;
 	private ArrayList<NotificationSinkInterface> sinkList = 
 			new ArrayList<NotificationSinkInterface>();
-	private Queue<Notification> Notifications;
+	private ArrayList<Notification> notifications;
 	
 	public NotificationSource(String name) throws RemoteException{
 		super();
 		this.name = name;
-		this.Notifications = new LinkedList<Notification>();
+		this.notifications = new ArrayList<Notification>();
 		//setUpSource();
 		Thread pingThread = new Thread(new SinkPinger(sinkList));
 		pingThread.start();
@@ -39,6 +37,7 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 	@Override
 	public void registerSink(NotificationSinkInterface sink) throws RemoteException {
 		sinkList.add((NotificationSinkInterface)sink);
+		syncSinkNotifications(sink);
 	}
 
 	@Override
@@ -48,12 +47,24 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 
 	@Override
 	public void sendNotification(Notification notification) throws RemoteException {
+		notifications.add(notification);
 		for(NotificationSinkInterface sink : sinkList){
 			try{
 				sink.notifySink(notification);
 			}catch(Exception e){System.out.println(e.getMessage());}
 		}
 		//sinkList.get(0).notifySink(notification);
+	}
+	
+	public void syncSinkNotifications(NotificationSinkInterface sink){
+		for(Notification note : notifications){
+			try {
+				sink.notifySink(note);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override

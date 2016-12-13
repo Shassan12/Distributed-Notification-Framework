@@ -40,6 +40,19 @@ public class NotificationSink extends UnicastRemoteObject
 		System.out.println("ping Recieved");
 	}
 	
+	public void unsubscribeFromSinks(){
+		for(NotificationSourceInterface source : sourceList){
+			try {
+				source.removeSink(this);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		sourceList.clear();
+	}
+	
 	public void addSource(String sourceName){
 		NotificationSourceInterface source;
 		try {

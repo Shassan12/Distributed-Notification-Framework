@@ -28,7 +28,6 @@ public class NewsPage extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private NotificationSink sink;
 	private JPanel articles;
-	private ButtonGroup radioGroup;
 	private JButton setTopics;
 	private JTextArea contents;
 	private JLabel titleLabel;
@@ -119,7 +118,7 @@ public class NewsPage extends JFrame{
 		titleLabel = new JLabel(" ");
 		contents = new JTextArea();
 		contents.setMaximumSize(new Dimension(500, 550));
-		contents.setPreferredSize(new Dimension(50, 550));
+		contents.setPreferredSize(new Dimension(500, 550));
 		titleLabel.setMinimumSize(new Dimension(350,80));
 		
 		articleContentsPanel.add(titleLabel);
@@ -187,14 +186,6 @@ public class NewsPage extends JFrame{
 			gbc.gridwidth = 4;
 			this.add(articleTitle, gbc);
 
-			gbc.anchor = GridBagConstraints.WEST;
-			gbc.gridwidth = 2;
-			JLabel articlePostDate = new JLabel("  "+article.getPostTime());
-			articlePostDate.setFont(new Font("Serif",Font.BOLD, 12));
-			gbc.gridx = 0;
-			gbc.gridy = 1;
-			this.add(articlePostDate, gbc);
-
 			JLabel articleTopic = new JLabel(article.getTopic());
 			articleTopic.setFont(new Font("Serif",Font.BOLD, 12));
 			gbc.gridx = 2;
@@ -207,12 +198,35 @@ public class NewsPage extends JFrame{
 		/*Creates the tile with a gradient fill (to differentiate tiles from each other)*/
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			Graphics2D g2d = (Graphics2D) g;
+			int width = getWidth();
+			int height = getHeight();
+			
+			if(article.getTopic().equals("Politics")){
+				g.setColor(new Color(255,0,0));
+				g.fillRect(0, 0, width, height);
+			}
+			
+			if(article.getTopic().equals("Finance")){
+				g.setColor(new Color(155,0,155));
+				g.fillRect(0, 0, width, height);
+			}
+			
+			if(article.getTopic().equals("Technology")){
+				g.setColor(new Color(0,0,255));
+				g.fillRect(0, 0, width, height);
+			}
+			
+			if(article.getTopic().equals("Satire")){
+				g.setColor(new Color(155,155,0));
+				g.fillRect(0, 0, width, height);
+			}
+			
+			/*Graphics2D g2d = (Graphics2D) g;
 			int width = getWidth();
 			int height = getHeight();
 			GradientPaint gp = new GradientPaint(0, 20, Color.CYAN, 0, height, Color.RED);
 			g2d.setPaint(gp);
-			g2d.fillRect(0, 0, width, height);
+			g2d.fillRect(0, 0, width, height);*/
 		}
 		
 		/*Listens for mouse clicks on tiles*/

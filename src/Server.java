@@ -54,20 +54,7 @@ public class Server {
 			server.addSource(financeSource);
 			server.addSource(technologySource);
 			server.addSource(satireSource);
-			Article test = new Article();
-			test.setTitle("Man eats a potato");
-			test.setTopic("Politics");
-			test.setPostTime("21:47 12/12/2016");
-			test.setArticleText("fssssasffffffffffffffffffffffffffffffffffffffffffffffffffff");
-			Notification note = new Notification(test);
-			while(true){
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e1) {}	
-				server.sendNotification(note, "Politics");
-				server.sendNotification(note, "Satire");
-				System.out.println("sent");
-			}
+			UploadArticleInterface uai = new UploadArticleInterface(server);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

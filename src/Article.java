@@ -4,7 +4,6 @@ public class Article implements Serializable{
 	private String title;
 	private String topic;
 	private String articleText;
-	private String postTime;
 	
 	public void setTitle(String title) {
 		this.title = title;
@@ -16,15 +15,6 @@ public class Article implements Serializable{
 	
 	public void setArticleText(String articleText) {
 		this.articleText = articleText;
-	}
-	
-	
-	public void setPostTime(String postTime) {
-		this.postTime = postTime;
-	}
-
-	public String getPostTime() {
-		return postTime;
 	}
 
 	public String getTitle() {

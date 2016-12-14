@@ -14,20 +14,9 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 		super();
 		this.name = name;
 		this.notifications = new ArrayList<Notification>();
-		//setUpSource();
 		Thread pingThread = new Thread(new SinkPinger(sinkList));
 		pingThread.start();
 	}
-	
-	/*public void setUpSource(){
-		try{
-			registry = LocateRegistry.createRegistry(port);
-			registry.rebind("source", this);
-			System.out.println("Server set up and running.");
-			
-			NotificationInterface n = new Notification();
-		}catch(Exception e){System.out.println(e.getMessage());}
-	}*/
 	
 	@Override
 	public String getName(){
@@ -61,17 +50,13 @@ public class NotificationSource extends UnicastRemoteObject implements Notificat
 			try {
 				sink.notifySink(note);
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 	
 	@Override
-	public void ping() throws RemoteException {
-		System.out.println("recieved ping");
-		
-	}
+	public void ping() throws RemoteException {}
 	
 	class SinkPinger implements Runnable{
 		private ArrayList<NotificationSinkInterface> sinkList;

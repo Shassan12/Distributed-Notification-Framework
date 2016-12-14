@@ -19,6 +19,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class UploadArticleInterface extends JFrame{
+	private static final long serialVersionUID = 1L;
 	private Server server;
 	private JTextField title;
 	private JTextArea contents;

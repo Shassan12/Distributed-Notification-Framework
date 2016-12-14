@@ -64,7 +64,6 @@ public class NewsPage extends JFrame{
 		optionPanel.setMinimumSize(new Dimension(350,650));
 		optionPanel.setPreferredSize(new Dimension(350,650));
 		
-		//radioGroup = new ButtonGroup();
 		ArrayList<JCheckBox> buttonList = new ArrayList<JCheckBox>();
 		politics = new JCheckBox("Politics");
 		finance = new JCheckBox("Finance");
@@ -76,7 +75,6 @@ public class NewsPage extends JFrame{
 		buttonList.add(satire);
 
 		for(JCheckBox button : buttonList){
-			//radioGroup.add(button);
 			optionPanel.add(button);
 		}
 		
@@ -124,17 +122,6 @@ public class NewsPage extends JFrame{
 		articleContentsPanel.add(titleLabel);
 		articleContentsPanel.add(contents);
 		mainPanel.add(articleContentsPanel);
-		////////////////////////////////////////
-		//Article test = new Article();
-		//test.setTitle("Man eats a potato");
-		//test.setTopic("nonsense");
-		//test.setPostTime("21:47 12/12/2016");
-		//NewsTile t = new NewsTile(test);
-		//NewsTile t2 = new NewsTile(test);
-		//addArticle(test);
-		//articles.add(t);
-		//articles.add(t2);
-		////////////////////////////////////////
 		
 		this.setSize(1200, 700);
 		this.setResizable(false);
@@ -220,13 +207,6 @@ public class NewsPage extends JFrame{
 				g.setColor(new Color(155,155,0));
 				g.fillRect(0, 0, width, height);
 			}
-			
-			/*Graphics2D g2d = (Graphics2D) g;
-			int width = getWidth();
-			int height = getHeight();
-			GradientPaint gp = new GradientPaint(0, 20, Color.CYAN, 0, height, Color.RED);
-			g2d.setPaint(gp);
-			g2d.fillRect(0, 0, width, height);*/
 		}
 		
 		/*Listens for mouse clicks on tiles*/

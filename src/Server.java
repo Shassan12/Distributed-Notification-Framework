@@ -38,7 +38,6 @@ public class Server {
 					(NotificationSourceInterface)registry.lookup(sourceName);
 			source.sendNotification(note);
 		} catch (RemoteException | NotBoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

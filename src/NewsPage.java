@@ -1,29 +1,10 @@
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
+/*Basic GUi that acts as a user interface for the client
+ * side of the application*/
 public class NewsPage extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private NotificationSink sink;
@@ -42,6 +23,7 @@ public class NewsPage extends JFrame{
 		this.init();
 	}
 	
+	/*Constructs the user interface*/
 	public void init(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container mainPanel = this.getContentPane();
@@ -78,13 +60,15 @@ public class NewsPage extends JFrame{
 			optionPanel.add(button);
 		}
 		
-		setTopics = new JButton("set Topics");
+		setTopics = new JButton("Set Topics");
 		
+		/*Adds an action listener to the button that subscribes the sink
+		to the correct sources*/
 		setTopics.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				sink.unsubscribeFromSinks();
+				sink.unsubscribeFromSources();
 				clearArticles();
 				if(politics.isSelected()){
 					sink.addSource("Politics");
@@ -115,9 +99,12 @@ public class NewsPage extends JFrame{
 		articleContentsPanel.setPreferredSize(new Dimension(350,650));
 		titleLabel = new JLabel(" ");
 		contents = new JTextArea();
-		contents.setMaximumSize(new Dimension(500, 550));
-		contents.setPreferredSize(new Dimension(500, 550));
+		contents.setMaximumSize(new Dimension(300, 550));
+		contents.setPreferredSize(new Dimension(300, 550));
+		contents.setAlignmentX(Component.CENTER_ALIGNMENT);
+		contents.setWrapStyleWord(true);
 		titleLabel.setMinimumSize(new Dimension(350,80));
+		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		articleContentsPanel.add(titleLabel);
 		articleContentsPanel.add(contents);
@@ -129,6 +116,7 @@ public class NewsPage extends JFrame{
 		this.setLocationRelativeTo(null);
 	}
 	
+	//Adds an article to the list of articles on the interface
 	public void addArticle(Article article){
 		NewsTile tile = new NewsTile(article);
 		articles.add(tile);
@@ -136,12 +124,14 @@ public class NewsPage extends JFrame{
 		this.repaint();
 	}
 	
+	//removes all articles on the interface
 	public void clearArticles(){
 		articles.removeAll();
 		this.revalidate();
 		this.repaint();
 	}
 	
+	/*Class used to create news tiles*/
 	private class NewsTile extends JPanel{
 		private static final long serialVersionUID = 1L;
 		private Article article;
@@ -155,8 +145,8 @@ public class NewsPage extends JFrame{
 			return this.article;
 		}
 
-		/*Creates the tile, with fields containing information about the item, including title, sellerID, start time,
-		 * close time, highest bid and the item's status*/
+		/*Creates the tile, adding the title and topic of the article
+		 * to the tile*/
 		public void init(){
 			this.setLayout(new GridBagLayout());
 			this.setPreferredSize(new Dimension(350,45));
@@ -182,7 +172,8 @@ public class NewsPage extends JFrame{
 			this.addMouseListener(new TileListener(this));
 		}
 
-		/*Creates the tile with a gradient fill (to differentiate tiles from each other)*/
+		/*Creates the tile with a color corresponding to the aricle's
+		 * topic*/
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			int width = getWidth();
@@ -224,18 +215,18 @@ public class NewsPage extends JFrame{
 				contents.setText(article.getArticleText());
 			}
 			
+			//apply a transparent layer on top of the tile on mouse over
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				//apply a transparent layer on top of the tile on mouse over
 				newsTile.setOpaque(false);
 				Graphics g = newsTile.getGraphics();
 				g.setColor(new Color(0,255,0,80));
 				g.fillRect(0, 0, newsTile.getWidth(), newsTile.getHeight());
 			}
 			
+			//remove transparent layer when mouse exits the tile
 			@Override
 			public void mouseExited(MouseEvent e) {
-				//remove transparent layer when mouse exits the tile
 				newsTile.setOpaque(true);
 				newsTile.repaint();
 			}

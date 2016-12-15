@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/*Server class that has an RMI registry containing one or more sources*/
 public class Server {
 	private int port;
 	private Registry registry;
@@ -13,6 +14,7 @@ public class Server {
 		setUpRegistry();
 	}
 	
+	/*Create the RMI registry*/
 	public void setUpRegistry(){
 		try {
 			registry = LocateRegistry.createRegistry(port);
@@ -21,10 +23,11 @@ public class Server {
 		}
 	}
 	
+	//Adds a source to the RMI registry
 	public void addSource(NotificationSourceInterface source){
 		try {
 			registry.rebind(source.getName(), source);
-			System.out.println("sourceName source added");
+			System.out.println("source "+source.getName()+" added");
 		} catch (AccessException e) {
 			e.printStackTrace();
 		} catch (RemoteException e) {
@@ -32,16 +35,19 @@ public class Server {
 		}
 	}
 	
-	public void sendNotification(Notification note, String sourceName){
+	/*Passes an article to a source that will then send the article to all 
+	 *subscribed sinks*/
+	public void sendNotification(Article article, String sourceName){
 		try {
 			NotificationSourceInterface source = 
 					(NotificationSourceInterface)registry.lookup(sourceName);
-			source.sendNotification(note);
+			source.sendNotification(article);
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/*Main methods that creates sinks and adds them to the server. Creates server GUI*/
 	public static void main(String[] args) {
 		try {
 			Server server = new Server(1099);

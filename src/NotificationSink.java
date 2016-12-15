@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/*Distributed Object that receives Notifications from NotifcationSources*/
 public class NotificationSink extends UnicastRemoteObject
 								implements NotificationSinkInterface{
 	
@@ -18,6 +19,7 @@ public class NotificationSink extends UnicastRemoteObject
 	private int port;
 	private String serverAddress;
 	
+	/*Takes the port and address of the server this is connecting to*/
 	public NotificationSink(int port, String serverAddress) throws RemoteException{
 		super();
 		this.port = port;
@@ -25,55 +27,62 @@ public class NotificationSink extends UnicastRemoteObject
 		this.notificationQueue = new LinkedList<Notification>();
 		sourceList = new ArrayList<NotificationSourceInterface>();
 		this.connectToServer();
-		//Thread sourcePinger = new Thread(new SourcePinger(this));
-		//sourcePinger.start();
 	}
 	
+	//invoked remotely by a source to pass a Notification to this sink
 	@Override
 	public void notifySink(Notification notification) throws RemoteException {
 		notificationQueue.add(notification);
-		
 	}
 	
+	/*empty method used by source to check if source can still 
+	 * invoke methods on this sink*/
 	@Override
 	public void ping(){}
 	
-	public void unsubscribeFromSinks(){
+	/*unsubscribes this sink from all of the sources it is registered
+	 * to*/
+	public void unsubscribeFromSources(){
 		for(NotificationSourceInterface source : sourceList){
 			try {
 				source.removeSink(this);
 			} catch (RemoteException e) {
-				e.printStackTrace();
+				this.reconnect();
 			}
 		}
 		
 		sourceList.clear();
 	}
 	
+	/*subscribes this sink to the specified source*/
 	public void addSource(String sourceName){
 		NotificationSourceInterface source;
 		try {
 			source = (NotificationSourceInterface)registry.lookup(sourceName);
 			source.registerSink((NotificationSinkInterface)this);
 			sourceList.add(source);
-			System.out.println("Source added!");
+			System.out.println("registed to "+source.getName());
 		} catch (AccessException e) {
 			e.printStackTrace();
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			this.reconnect();
 		} catch (NotBoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/*returns the identifier of the source at the specified index 
+	 * in the list of sources*/
 	public NotificationSourceInterface getSource(int option){
 		return sourceList.get(option);
 	}
 	
+	//returns the number of sources this sink is subscribed to
 	public int getNumOfSources(){
 		return sourceList.size();
 	}
 	
+	//connects to the RMI registry running on a server
 	public void connectToServer(){
 		try {
 			registry = LocateRegistry.getRegistry(serverAddress,port);
@@ -81,88 +90,39 @@ public class NotificationSink extends UnicastRemoteObject
 			e.printStackTrace();
 		}
 	}
+	
+	//check if this sink has any new Notifications
 	public boolean hasNotification(){
 		return (!notificationQueue.isEmpty());
 	}
-	@Override
-	public Object getNotification() throws RemoteException {
+	
+	//get the next notification that needs to be revieved by an application
+	public Object getNotification(){
 		Notification notification = notificationQueue.poll();
 		return notification.getMessage();
 	}
 	
-	/*public boolean reConnectToServer(){
-		try {
-			registry = LocateRegistry.getRegistry(serverAddress,port);
-			ArrayList<NotificationSourceInterface> sourceList2 = 
-					new ArrayList<NotificationSourceInterface>();
-			
-			for(int i=0; i<sourceList.size();i++){
-				sourceList2.add(sourceList.get(i));
-			}
-			sourceList.clear();
-			
-			for(int j=0; j<sourceList2.size();j++){
-				NotificationSourceInterface source;
-				source = (NotificationSourceInterface)registry.lookup(sourceList.get(j).getName());
-				source.registerSink((NotificationSinkInterface)this);
-				sourceList.add(source);
-			}
-
-			
-			//sourceList.add((NotificationSourceInterface)
-					//	registry.lookup("source"));
-			//source1.registerSink((NotificationSinkInterface)sink);
-			
-			System.out.println("Source found!");
-			return true;
-		} catch (RemoteException | NotBoundException e) {
-			System.out.println("not yet");
-			return false;
-		}
-	}*/
-	
-	
-	
-	/*class SourcePinger implements Runnable{
-		private NotificationSink sink;
-		
-		public SourcePinger(NotificationSink sink){
-			this.sink = sink;
-		}
-		
-		public void run(){
-			NotificationSourceInterface source;
-			while(true){
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e1) {}
-				
-				try{
-					for(int i=0; i<sink.getNumOfSources(); i++){
-						source = sink.getSource(i);
-						source.ping();
-					}
-				}catch(RemoteException e){
-					System.out.println("lost connection to server. Attempting reconnection");
-					boolean reConnected = false;
-					while(!reConnected){
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException e1) {}
-						reConnected = sink.reConnectToServer();
-						if(reConnected){
-							for(int i=0; i<sink.getNumOfSources();i++){
-								try {
-									System.out.println("wut");
-									sink.getSource(i).registerSink((NotificationSinkInterface)sink);
-								} catch (RemoteException e1) {
-									//e1.printStackTrace();
-								}
-							}
-						}
-					}
+	//attempt to resubscribe to sources this sink has lost access to
+	public void reconnect(){
+		boolean reconnected = false;
+		int attempts = 0;
+		while(!reconnected){
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e1) {}
+			try{
+				attempts += 1;
+				for(NotificationSourceInterface source : sourceList){
+					source.ping();
+					source.registerSink(this);
 				}
+				
+				reconnected = true;
+			}catch(RemoteException e){
+				System.out.println("Could not reconnect to server "+attempts);
 			}
-		}*/
+		}
 	}
+}
+	
 

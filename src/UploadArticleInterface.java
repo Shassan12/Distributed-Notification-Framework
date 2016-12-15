@@ -13,11 +13,14 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+/*GUI that runs on the server side of the application to allow uploading of
+ * an article*/
 public class UploadArticleInterface extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private Server server;
@@ -33,6 +36,7 @@ public class UploadArticleInterface extends JFrame{
 		this.init();
 	}
 	
+	/*Creates the GUI*/
 	public void init(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container mainPanel = this.getContentPane();
@@ -54,6 +58,7 @@ public class UploadArticleInterface extends JFrame{
 		contents.setMaximumSize(new Dimension(500, 350));
 		contents.setPreferredSize(new Dimension(500, 350));
 		contents.setAlignmentX(Component.CENTER_ALIGNMENT);
+		contents.setWrapStyleWord(true);
 		contentsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		mainPanel.add(contentsLabel);
@@ -83,6 +88,8 @@ public class UploadArticleInterface extends JFrame{
 		uploadArticleButton = new JButton("Upload Article");
 		uploadArticleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+		/*Adds listener to button that will create the article of the selected topic
+		 * and contents*/
 		uploadArticleButton.addActionListener(new ActionListener(){
 
 			@Override
@@ -93,13 +100,9 @@ public class UploadArticleInterface extends JFrame{
 						article.setTitle(title.getText());
 						article.setArticleText(contents.getText());
 						article.setTopic(button.getText());
-						Notification note;
-						try {
-							note = new Notification(article);
-							server.sendNotification(note, button.getText());
-						} catch (RemoteException e1) {
-							e1.printStackTrace();
-						}
+						clearBoxes();
+						server.sendNotification(article, button.getText());
+						JOptionPane.showMessageDialog(null, button.getText()+" article uploaded", null, JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				
@@ -113,5 +116,11 @@ public class UploadArticleInterface extends JFrame{
 		this.setResizable(false);
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+	}
+	
+	//clears all textboxes in GUI
+	public void clearBoxes(){
+		title.setText("Enter Article Title");
+		contents.setText("");
 	}
 }

@@ -1,6 +1,7 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+/*Notification class that carries a message*/
 public class Notification implements NotificationInterface{
 	
 	private static final long serialVersionUID = 1L;
@@ -11,11 +12,8 @@ public class Notification implements NotificationInterface{
 		this.message = message;
 	}
 	
-	public void setMessage(String message) throws RemoteException{
-		this.message = message;
-	}
-	
-	public Object getMessage()throws RemoteException{
+	//returns the object carried in this notification
+	public Object getMessage(){
 		return this.message;
 	}
 }
